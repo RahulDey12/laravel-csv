@@ -10,6 +10,13 @@ class Row
     {
     }
 
+    public function getNthColumn(int $column, bool $sanitize = true)
+    {
+        $value = Arr::get(array_values($this->record), $column);
+
+        return $sanitize ? $this->sanitizeValue($value) : $value;
+    }
+
     public function getColumn(string $column, bool $sanitize = true): ?string
     {
         $value = Arr::get($this->record, $column);

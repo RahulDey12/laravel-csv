@@ -6,14 +6,16 @@ namespace Rahul900day\Csv;
 
 use Countable;
 use Illuminate\Support\Collection;
+use Illuminate\Support\LazyCollection;
 use Iterator;
 use IteratorIterator;
+use League\Csv\TabularDataReader;
 
 class RecordList extends IteratorIterator implements Countable, Iterator
 {
     protected int $count = -1;
 
-    public function __construct(protected Iterator $csv_data)
+    public function __construct(protected TabularDataReader $csv_data)
     {
         parent::__construct($this->csv_data);
     }
