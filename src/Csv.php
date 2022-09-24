@@ -4,33 +4,20 @@ declare(strict_types=1);
 
 namespace Rahul900day\Csv;
 
-use Closure;
-use Illuminate\Support\Collection;
-use Illuminate\Support\LazyCollection;
-use League\Csv\Exception;
 use League\Csv\Reader;
-use League\Csv\Statement;
+use Rahul900day\Csv\Exceptions\LogicException;
 
 class Csv
 {
-    protected Reader $csv_reader;
-
     protected int $header_offset = 0;
 
-    protected bool $include_header = true;
-
-    public function fromPath(string $path): static
+    public function __construct(protected Reader $csv_reader)
     {
-        $this->csv_reader = Reader::createFromPath($path);
-
-        return $this;
     }
 
-    public function includeHeader(bool $include): static
+    public static function fromPath(string $path): static
     {
-        $this->include_header = $include;
-
-        return $this;
+        return new static(Reader::createFromPath($path));
     }
 
     public function setHeader(int $offset): static
@@ -40,80 +27,14 @@ class Csv
         return $this;
     }
 
-    public function get($columns = []): Collection
+    public function query(): Builder
     {
-        if($this->include_header) {
-            $this->csv_reader->setHeaderOffset($this->header_offset);
+        if(! isset($this->csv_reader)) {
+            new LogicException('Csv Source is Not Defied.');
         }
 
-        return Collection::make(new RecordList(Statement::create()->process($this->csv_reader, $columns)));
-    }
+        $this->csv_reader->setHeaderOffset($this->header_offset);
 
-    public function lazy(int $chunkSize = 1000): LazyCollection
-    {
-        if($this->include_header) {
-            $this->csv_reader->setHeaderOffset($this->header_offset);
-        }
-
-        return LazyCollection::make(function () use ($chunkSize) {
-            $page = 0;
-
-            while (true) {
-                $results = Statement::create()
-                    ->offset($page++ * $chunkSize)
-                    ->limit($chunkSize)
-                    ->process($this->csv_reader);
-
-                $results = new RecordList($results);
-
-                foreach ($results as $result) {
-                    yield $result;
-                }
-
-                if($results->count() < $chunkSize) {
-                    return;
-                }
-            }
-        });
-    }
-
-    public function chunk(int $count, Closure $callback): bool
-    {
-        if($this->include_header) {
-            $this->csv_reader->setHeaderOffset($this->header_offset);
-        }
-
-        $page = 1;
-
-        do {
-            // We'll execute the query for the given page and get the results. If there are
-            // no results we can just break and return from here. When there are results
-            // we will call the callback with the current chunk of these results here.
-            $results = Statement::create()
-                ->offset(($page - 1) * $count)
-                ->limit($count)
-                ->process($this->csv_reader);
-
-            $results = new RecordList($results);
-
-            $countResults = $results->count();
-
-            if ($countResults == 0) {
-                break;
-            }
-
-            // On each chunk result set, we will pass them to the callback and then let the
-            // developer take care of everything within the callback, which allows us to
-            // keep the memory low for spinning through large result sets for working.
-            if ($callback($results, $page) === false) {
-                return false;
-            }
-
-            unset($results);
-
-            $page++;
-        } while ($countResults == $count);
-
-        return true;
+        return new Builder($this->csv_reader);
     }
 }
