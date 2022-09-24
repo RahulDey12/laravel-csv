@@ -6,11 +6,14 @@ namespace Rahul900day\Csv;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\LazyCollection;
+use Illuminate\Support\Traits\Macroable;
 use League\Csv\Reader;
 use League\Csv\Statement;
 
 class Builder
 {
+    use Macroable;
+
     protected Statement $statement;
 
     public function __construct(protected Reader $csv_reader)
@@ -35,6 +38,11 @@ class Builder
     public function forPage(int $page, int $perPage = 15): static
     {
         return $this->offset(($page - 1) * $perPage)->limit($perPage);
+    }
+
+    public function take(int $value): static
+    {
+        return $this->limit($value);
     }
 
     public function get($columns = []): Collection
@@ -90,5 +98,41 @@ class Builder
         } while ($countResults == $count);
 
         return true;
+    }
+
+    public function chunkMap(callable $callback, int $count = 1000): Collection
+    {
+        $collection = Collection::make();
+
+        $this->chunk($count, function ($items) use ($collection, $callback) {
+            $items->each(function ($item) use ($collection, $callback) {
+                $collection->push($callback($item));
+            });
+        });
+
+        return $collection;
+    }
+
+    public function each(callable $callback, $count = 1000): bool
+    {
+        return $this->chunk($count, function ($results) use ($callback) {
+            foreach ($results as $key => $value) {
+                if ($callback($value, $key) === false) {
+                    return false;
+                }
+            }
+        });
+    }
+
+    public function first($columns = []): ?Row
+    {
+        return $this->take(1)->get($columns)->first();
+    }
+
+    public function tap(callable $callback): static
+    {
+        $callback($this);
+
+        return $this;
     }
 }
