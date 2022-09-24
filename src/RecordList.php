@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Rahul900day\Csv;
 
 use Countable;
-use Illuminate\Support\Collection;
-use Illuminate\Support\LazyCollection;
 use Iterator;
 use IteratorIterator;
 use League\Csv\TabularDataReader;
@@ -23,7 +21,7 @@ class RecordList extends IteratorIterator implements Countable, Iterator
     public function count(): int
     {
         if($this->count === -1) {
-            $this->count = iterator_count($this->csv_data);
+            $this->count = $this->csv_data->count();
         }
 
         return $this->count;
@@ -32,10 +30,5 @@ class RecordList extends IteratorIterator implements Countable, Iterator
     public function current(): Row
     {
         return new Row(parent::current());
-    }
-
-    public function collect(): Collection
-    {
-        return new Collection($this);
     }
 }

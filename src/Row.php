@@ -24,6 +24,11 @@ class Row
         return $sanitize ? $this->sanitizeValue($value) : $value;
     }
 
+    public function __get(string $name): ?string
+    {
+        return $this->getColumn($name);
+    }
+
     protected function sanitizeValue(?string $value): ?string
     {
         $value = trim($value);
