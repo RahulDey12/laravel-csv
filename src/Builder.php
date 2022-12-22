@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rahul900day\Csv;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\LazyCollection;
 use Illuminate\Support\Traits\Macroable;
@@ -134,5 +135,40 @@ class Builder
         $callback($this);
 
         return $this;
+    }
+
+    public function where(string $key, mixed $operator = null, mixed $value = null): static
+    {
+        $this->statement = $this->statement->where($this->operatorForWhere(...func_get_args()));
+
+        return $this;
+    }
+
+    protected function operatorForWhere(string $key, mixed $operator = null, mixed $value = null): callable
+    {
+        if (func_num_args() === 2) {
+            $value = $operator;
+
+            $operator = '=';
+        }
+
+        return function ($item) use ($key, $operator, $value) {
+            $retrieved = Arr::get($item, $key);
+
+            switch ($operator) {
+                default:
+                case '=':
+                case '==':  return $retrieved == $value;
+                case '!=':
+                case '<>':  return $retrieved != $value;
+                case '<':   return $retrieved < $value;
+                case '>':   return $retrieved > $value;
+                case '<=':  return $retrieved <= $value;
+                case '>=':  return $retrieved >= $value;
+                case '===': return $retrieved === $value;
+                case '!==': return $retrieved !== $value;
+                case '<=>': return $retrieved <=> $value;
+            }
+        };
     }
 }
