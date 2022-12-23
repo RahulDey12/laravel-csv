@@ -23,7 +23,7 @@ class Row implements ArrayAccess
         return new Column($value, $this->sanitize);
     }
 
-    public function getColumn(string $column): Column
+    public function getColumn(string|int $column): Column
     {
         $value = Arr::get($this->record, $column);
 
@@ -35,7 +35,7 @@ class Row implements ArrayAccess
         return $this->getColumn($name);
     }
 
-    public function has(string $key): bool
+    public function has(string|int $key): bool
     {
         return array_key_exists($key, $this->record);
     }
