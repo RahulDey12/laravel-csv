@@ -11,8 +11,14 @@
     ],
     "require": {
         "php": "^8.0",
+        "illuminate/contracts": "^9.45",
         "illuminate/support": "^9.0",
         "league/csv": "^9.8"
+    },
+    "require-dev": {
+        "mockery/mockery": "^1.5",
+        "orchestra/testbench": "^7.17",
+        "phpunit/phpunit": "^9.5"
     },
     "autoload": {
         "psr-4": {

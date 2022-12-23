@@ -8,20 +8,21 @@ use Countable;
 use Iterator;
 use IteratorIterator;
 use League\Csv\TabularDataReader;
+use Rahul900day\Csv\Sheet\Row;
 
-class RecordList extends IteratorIterator implements Countable, Iterator
+class Sheet extends IteratorIterator implements Countable, Iterator
 {
     protected int $count = -1;
 
-    public function __construct(protected TabularDataReader $csv_data)
+    public function __construct(protected TabularDataReader $records, protected bool|array $sanitize)
     {
-        parent::__construct($this->csv_data);
+        parent::__construct($this->records);
     }
 
     public function count(): int
     {
         if($this->count === -1) {
-            $this->count = $this->csv_data->count();
+            $this->count = $this->records->count();
         }
 
         return $this->count;
@@ -29,6 +30,6 @@ class RecordList extends IteratorIterator implements Countable, Iterator
 
     public function current(): Row
     {
-        return new Row(parent::current());
+        return new Row(parent::current(), $this->sanitize);
     }
 }

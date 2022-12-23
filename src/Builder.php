@@ -17,6 +17,8 @@ class Builder
 
     protected Statement $statement;
 
+    protected bool|array $sanitize = false;
+
     public function __construct(protected Reader $csv_reader)
     {
         $this->statement = Statement::create();
@@ -48,7 +50,7 @@ class Builder
 
     public function get($columns = []): Collection
     {
-        return Collection::make(new RecordList($this->statement->process($this->csv_reader, $columns)));
+        return Collection::make(new Sheet($this->statement->process($this->csv_reader, $columns), $this->sanitize));
     }
 
     public function lazy(int $chunkSize = 1000): LazyCollection
@@ -170,5 +172,12 @@ class Builder
                 case '<=>': return $retrieved <=> $value;
             }
         };
+    }
+
+    public function willBeSanitized(array $sanitizers = []): static
+    {
+        $this->sanitize = $sanitizers;
+
+        return $this;
     }
 }

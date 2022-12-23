@@ -1,32 +1,36 @@
 <?php
 
-namespace Rahul900day\Csv;
+declare(strict_types=1);
+
+namespace Rahul900day\Csv\Sheet;
 
 use ArrayAccess;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
+use Rahul900day\Csv\Exceptions\ColumnDoesNotExists;
+use Rahul900day\Csv\Sheet\Row\Column;
 
 class Row implements ArrayAccess
 {
-    public function __construct(protected array $record)
+    public function __construct(protected array $record, protected bool|array $sanitize)
     {
     }
 
-    public function getNthColumn(int $column, bool $sanitize = true)
+    public function getNthColumn(int $column): Column
     {
-        $value = Arr::get(array_values($this->record), $column);
+        $value = (string) Arr::get(array_values($this->record), $column);
 
-        return $sanitize ? $this->sanitizeValue($value) : $value;
+        return new Column($value, $this->sanitize);
     }
 
-    public function getColumn(string $column, bool $sanitize = true): ?string
+    public function getColumn(string $column): Column
     {
         $value = Arr::get($this->record, $column);
 
-        return $sanitize ? $this->sanitizeValue($value) : $value;
+        return new Column($value, $this->sanitize);
     }
 
-    public function __get(string $name): ?string
+    public function __get(string $name): Column
     {
         return $this->getColumn($name);
     }
@@ -43,7 +47,7 @@ class Row implements ArrayAccess
 
     public function offsetGet(mixed $offset): ?string
     {
-        return $this->getColumn($offset, false);
+        return $this->getColumn($offset)->getValue();
     }
 
     public function offsetSet(mixed $offset, mixed $value): void
@@ -60,19 +64,12 @@ class Row implements ArrayAccess
         Arr::set($this->record, $offset, "");
     }
 
-    protected function sanitizeValue(?string $value): ?string
-    {
-        $value = trim($value);
-
-        return strlen($value) ? $value : null;
-    }
-
     protected function validateKeyExists(string $key, ?string $message = null): void
     {
         if($this->has($key)) {
            return;
         }
 
-        throw new \Exception($message ?? "Column Does Not Exists");
+        throw new ColumnDoesNotExists($message);
     }
 }
