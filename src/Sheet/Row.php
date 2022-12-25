@@ -7,6 +7,7 @@ namespace Rahul900day\Csv\Sheet;
 use ArrayAccess;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
+use Rahul900day\Csv\Csv;
 use Rahul900day\Csv\Exceptions\ColumnDoesNotExists;
 use Rahul900day\Csv\Sheet\Row\Column;
 
@@ -20,14 +21,14 @@ class Row implements ArrayAccess
     {
         $value = (string) Arr::get(array_values($this->record), $column);
 
-        return new Column($value, $this->sanitize);
+        return new Csv::$columnClass($value, $this->sanitize);
     }
 
     public function getColumn(string|int $column): Column
     {
         $value = Arr::get($this->record, $column);
 
-        return new Column($value, $this->sanitize);
+        return new Csv::$columnClass($value, $this->sanitize);
     }
 
     public function __get(string $name): Column

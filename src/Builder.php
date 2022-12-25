@@ -4,24 +4,42 @@ declare(strict_types=1);
 
 namespace Rahul900day\Csv;
 
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Enumerable;
 use Illuminate\Support\LazyCollection;
+use Illuminate\Support\Traits\Conditionable;
 use Illuminate\Support\Traits\Macroable;
+use JsonSerializable;
 use League\Csv\Reader;
 use League\Csv\Statement;
+use Rahul900day\Csv\Sheet\Row;
+use Traversable;
+use UnitEnum;
 
 class Builder
 {
-    use Macroable;
+    use Macroable, Conditionable;
 
     protected Statement $statement;
 
     protected bool|array $sanitize = false;
 
-    public function __construct(protected Reader $csv_reader)
+    public function __construct(protected Reader $csvReader)
     {
         $this->statement = Statement::create();
+    }
+
+    public function getOriginalReader(): Reader
+    {
+        return $this->csvReader;
+    }
+
+    public function skip($value): static
+    {
+        return $this->offset($value);
     }
 
     public function offset(int $value): static
@@ -50,7 +68,7 @@ class Builder
 
     public function get($columns = []): Collection
     {
-        return Collection::make(new Sheet($this->statement->process($this->csv_reader, $columns), $this->sanitize));
+        return Collection::make(new Csv::$sheetClass($this->statement->process($this->csvReader, $columns), $this->sanitize));
     }
 
     public function lazy(int $chunkSize = 1000): LazyCollection
@@ -146,6 +164,58 @@ class Builder
         return $this;
     }
 
+    public function whereNull(?string $key = null): static
+    {
+        return $this->whereStrict($key, null);
+    }
+
+    public function whereStrict(string $key, mixed $value): static
+    {
+        return $this->where($key, '===', $value);
+    }
+
+    public function whereIn(string $key, Arrayable|iterable $values, bool $strict = false): static
+    {
+        $values = $this->getArrayableItems($values);
+
+        $this->statement = $this->statement->where(fn ($record) => in_array(data_get($record, $key), $values, $strict));
+
+        return $this;
+    }
+
+    public function whereInStrict(string $key, Arrayable|iterable $values): static
+    {
+        return $this->whereIn($key, $values, true);
+    }
+
+    public function whereBetween(string $key, Arrayable|iterable $values): static
+    {
+        return $this->where($key, '>=', reset($values))->where($key, '<=', end($values));
+    }
+
+    public function whereNotBetween(string $key, Arrayable|iterable $values): static
+    {
+        $this->statement = $this->statement->where(
+            fn ($record) => data_get($record, $key) < reset($values) || data_get($record, $key) > end($values)
+        );
+
+        return $this;
+    }
+
+    public function whereNotIn(string $key, Arrayable|iterable $values, bool $strict = false): static
+    {
+        $values = $this->getArrayableItems($values);
+
+        $this->statement = $this->statement->where(fn ($record) => ! in_array(data_get($record, $key), $values, $strict));
+
+        return $this;
+    }
+
+    public function whereNotInStrict(string $key, Arrayable|iterable $values): static
+    {
+        return $this->whereNotIn($key, $values, true);
+    }
+
     protected function operatorForWhere(string $key, mixed $operator = null, mixed $value = null): callable
     {
         if (func_num_args() === 2) {
@@ -172,6 +242,27 @@ class Builder
                 case '<=>': return $retrieved <=> $value;
             }
         };
+    }
+
+    protected function getArrayableItems($items): array
+    {
+        if (is_array($items)) {
+            return $items;
+        } elseif ($items instanceof Enumerable) {
+            return $items->all();
+        } elseif ($items instanceof Arrayable) {
+            return $items->toArray();
+        } elseif ($items instanceof Traversable) {
+            return iterator_to_array($items);
+        } elseif ($items instanceof Jsonable) {
+            return json_decode($items->toJson(), true);
+        } elseif ($items instanceof JsonSerializable) {
+            return (array) $items->jsonSerialize();
+        } elseif ($items instanceof UnitEnum) {
+            return [$items];
+        }
+
+        return (array) $items;
     }
 
     public function willBeSanitized(array $sanitizers = []): static

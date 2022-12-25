@@ -30,6 +30,6 @@ class Sheet extends IteratorIterator implements Countable, Iterator
 
     public function current(): Row
     {
-        return new Row(parent::current(), $this->sanitize);
+        return new Csv::$rowClass(parent::current(), $this->sanitize);
     }
 }
