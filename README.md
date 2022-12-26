@@ -32,7 +32,7 @@ composer require rahul900day/laravel-csv
 use Rahul900day\Csv\Csv;
 
 // Print 3 Passenger Name age above 20
-Csv::fromPath('titanic.csv')
+Csv::create()->fromPath('titanic.csv')
     ->query()
     ->where('Age', '>', 20)
     ->willBeSanitized()
