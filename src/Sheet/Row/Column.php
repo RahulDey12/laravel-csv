@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rahul900day\Csv\Sheet\Row;
 
 use Illuminate\Pipeline\Pipeline;

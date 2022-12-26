@@ -1,4 +1,4 @@
-# Laravel CSV
+<p align="center"><img src="/art/logo.svg" alt="Logo Laravel CSV"></p>
 
 Laravel CSV is a supercharged ⚡ CSV reader with the sweets of Laravel
 Eloquent.
