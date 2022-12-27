@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rahul900day\Csv;
 
 use League\Csv\Reader;
-use League\Csv\Stream;
 use Rahul900day\Csv\Exceptions\LogicException;
 
 class Csv
@@ -68,7 +67,7 @@ class Csv
 
     protected function createReader(): Reader
     {
-        if(! isset($this->filePath)) {
+        if (! isset($this->filePath)) {
             new LogicException('Csv Source is Not Defied.');
         }
 
