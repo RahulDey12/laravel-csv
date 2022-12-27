@@ -21,7 +21,7 @@ class Sheet extends IteratorIterator implements Countable, Iterator
 
     public function count(): int
     {
-        if($this->count === -1) {
+        if ($this->count === -1) {
             $this->count = $this->records->count();
         }
 

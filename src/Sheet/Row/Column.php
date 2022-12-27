@@ -19,7 +19,7 @@ class Column
 
     public function getValue(): ?string
     {
-        if($this->sanitize !== false) {
+        if ($this->sanitize !== false) {
             return  $this->getSanitizedValue($this->sanitize);
         }
 
