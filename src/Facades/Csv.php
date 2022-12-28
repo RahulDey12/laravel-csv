@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rahul900day\Csv\Facades;
 
 use Illuminate\Support\Facades\Facade;
+use SplFileObject;
 
 /**
  * @method static \Rahul900day\Csv\Csv fromDisk(string $disk, string $path, string $open_mode = 'r')
