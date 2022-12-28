@@ -6,7 +6,6 @@ namespace Rahul900day\Csv;
 
 use League\Csv\Reader;
 use Rahul900day\Csv\Concerns\HasReader;
-use Rahul900day\Csv\Exceptions\LogicException;
 
 class Csv
 {
