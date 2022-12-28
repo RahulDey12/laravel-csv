@@ -9,9 +9,9 @@ beforeEach(function () {
 });
 
 it('can create from file object', function () {
-    $file_obj = mock(SplFileObject::class, ["php://memory"])
+    $file_obj = mock(SplFileObject::class, ['php://memory'])
         ->shouldReceive('getCsvControl')
-        ->andReturn(',', '"', "\\")
+        ->andReturn(',', '"', '\\')
         ->getMock();
 
     mock('alias:'.Reader::class)
