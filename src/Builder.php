@@ -30,7 +30,7 @@ class Builder
 
     public function __construct(protected Reader $reader)
     {
-        $this->statement = Statement::create();
+        $this->statement = app(Statement::class);
     }
 
     public function skip($value): static

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rahul900day\Csv;
 
 use Illuminate\Support\ServiceProvider;
+use League\Csv\Statement;
 
 class CsvServiceProvider extends ServiceProvider
 {
@@ -13,6 +14,10 @@ class CsvServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(
             __DIR__.'/../config/csv.php', 'csv'
         );
+
+        $this->app->bind(Statement::class, function () {
+            return Statement::create();
+        });
 
         $this->app->singleton('csv', function () {
             return new Factory();
