@@ -19,11 +19,8 @@ class Csv
 
     protected int $headerOffset = 0;
 
-    protected string $filePath;
-
-    public static function create(): static
+    public function __construct(protected Reader $reader)
     {
-        return new static();
     }
 
     public static function useBuilderClass(string $class): void
@@ -46,13 +43,6 @@ class Csv
         self::$columnClass = $class;
     }
 
-    public function fromPath(string $path): static
-    {
-        $this->filePath = $path;
-
-        return $this;
-    }
-
     public function setHeaderOffset(int $offset): static
     {
         $this->headerOffset = $offset;
@@ -62,18 +52,13 @@ class Csv
 
     public function query(): Builder
     {
-        return new self::$builderClass($this->createReader());
+        return new self::$builderClass($this->setupReader());
     }
 
-    protected function createReader(): Reader
+    protected function setupReader(): Reader
     {
-        if (! isset($this->filePath)) {
-            new LogicException('Csv Source is Not Defied.');
-        }
+        $this->reader->setHeaderOffset($this->headerOffset);
 
-        $reader = Reader::createFromPath($this->filePath);
-        $reader->setHeaderOffset($this->headerOffset);
-
-        return $reader;
+        return $this->reader;
     }
 }

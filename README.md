@@ -14,6 +14,7 @@ Eloquent.
 - [ ] Add support for casting
 - [ ] Add file saving support
 - [ ] Add enum support
+- [x] Add Facade Support
 - [ ] Add Tests
 
 ## Installation
@@ -29,10 +30,10 @@ composer require rahul900day/laravel-csv
 ## Usage
 
 ```php
-use Rahul900day\Csv\Csv;
+use Rahul900day\Csv\Facades\Csv;
 
 // Print 3 Passenger Name age above 20
-Csv::create()->fromPath('titanic.csv')
+Csv::fromPath('titanic.csv')
     ->query()
     ->where('Age', '>', 20)
     ->willBeSanitized()

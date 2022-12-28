@@ -27,14 +27,14 @@ class Builder
 
     protected bool|array $sanitize = false;
 
-    public function __construct(protected Reader $csvReader)
+    public function __construct(protected Reader $reader)
     {
         $this->statement = Statement::create();
     }
 
     public function getOriginalReader(): Reader
     {
-        return $this->csvReader;
+        return $this->reader;
     }
 
     public function skip($value): static
@@ -68,7 +68,7 @@ class Builder
 
     public function get($columns = []): Collection
     {
-        return Collection::make(new Csv::$sheetClass($this->statement->process($this->csvReader, $columns), $this->sanitize));
+        return Collection::make(new Csv::$sheetClass($this->statement->process($this->reader, $columns), $this->sanitize));
     }
 
     public function lazy(int $chunkSize = 1000): LazyCollection
