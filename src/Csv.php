@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rahul900day\Csv;
 
 use League\Csv\Reader;
-use Rahul900day\Csv\Exceptions\LogicException;
 
 class Csv
 {
