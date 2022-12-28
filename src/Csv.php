@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace Rahul900day\Csv;
 
 use League\Csv\Reader;
+use Rahul900day\Csv\Concerns\HasReader;
 use Rahul900day\Csv\Exceptions\LogicException;
 
 class Csv
 {
+    use HasReader;
+
     public static string $builderClass = 'Rahul900day\\Csv\\Builder';
 
     public static string $sheetClass = 'Rahul900day\\Csv\\Sheet';
@@ -57,8 +60,8 @@ class Csv
 
     protected function setupReader(): Reader
     {
-        $this->reader->setHeaderOffset($this->headerOffset);
+        $this->getReader()->setHeaderOffset($this->headerOffset);
 
-        return $this->reader;
+        return $this->getReader();
     }
 }

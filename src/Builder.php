@@ -15,13 +15,14 @@ use Illuminate\Support\Traits\Macroable;
 use JsonSerializable;
 use League\Csv\Reader;
 use League\Csv\Statement;
+use Rahul900day\Csv\Concerns\HasReader;
 use Rahul900day\Csv\Sheet\Row;
 use Traversable;
 use UnitEnum;
 
 class Builder
 {
-    use Macroable, Conditionable;
+    use Macroable, Conditionable, HasReader;
 
     protected Statement $statement;
 
@@ -30,11 +31,6 @@ class Builder
     public function __construct(protected Reader $reader)
     {
         $this->statement = Statement::create();
-    }
-
-    public function getOriginalReader(): Reader
-    {
-        return $this->reader;
     }
 
     public function skip($value): static
@@ -68,7 +64,10 @@ class Builder
 
     public function get($columns = []): Collection
     {
-        return Collection::make(new Csv::$sheetClass($this->statement->process($this->reader, $columns), $this->sanitize));
+        return Collection::make(new Csv::$sheetClass(
+            $this->statement->process($this->getReader(), $columns),
+            $this->sanitize
+        ));
     }
 
     public function lazy(int $chunkSize = 1000): LazyCollection
