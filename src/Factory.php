@@ -25,7 +25,7 @@ class Factory
 
     public function fromStream($stream): Csv
     {
-        return new Csv($stream);
+        return new Csv(Reader::createFromStream($stream));
     }
 
     public function fromString(string $content): Csv

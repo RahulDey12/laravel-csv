@@ -6,7 +6,7 @@ use Closure;
 
 class TrimString
 {
-    public function __invoke(string $cell, Closure $next): string
+    public function __invoke(string $cell, Closure $next): mixed
     {
         return $next(trim($cell));
     }
