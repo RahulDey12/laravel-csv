@@ -24,8 +24,8 @@ it('can give sanitized value', function () {
     expect($column->getSanitizedValue())->toBe(trim($string_with_leading_spaces));
     expect($column->getSanitizedValue(true))->toBe(trim($string_with_leading_spaces));
     expect($column->getSanitizedValue([
-        fn ($cell, $next) => $next(Str::of($cell)->snake()->toString()),
-        fn ($cell, $next) => $next(Str::of($cell)->lower()->toString()),
+        fn ($cell, $next) => $next((string) Str::of($cell)->snake()),
+        fn ($cell, $next) => $next((string) Str::of($cell)->lower()),
     ]))->toBe('hello_world');
 });
 
