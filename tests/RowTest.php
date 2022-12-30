@@ -14,7 +14,6 @@ beforeEach(function () {
 it('can give column with name', function () {
     expect($this->row->getColumn('name'))->toBeInstanceOf(Column::class)
         ->and($this->row->getColumn('designation')->getValue())->toBe('Developer');
-
 });
 
 it('can give column with object property', function () {
@@ -42,7 +41,5 @@ it('compatible with ArrayAccess', function () {
 });
 
 it('throws error if column not exits', function () {
-    expect(fn() => $this->row['email'] = 'name@me.com')->toThrow(ColumnDoesNotExists::class);
+    expect(fn () => $this->row['email'] = 'name@me.com')->toThrow(ColumnDoesNotExists::class);
 });
-
-
