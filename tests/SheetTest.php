@@ -7,7 +7,7 @@ use Rahul900day\Csv\Sheet\Row;
 
 beforeEach(function () {
     $statement = app(Statement::class);
-    $content = <<<EOF
+    $content = <<<'EOF'
 name,designation
 Taylor Otwell,Developer
 Rahul Dey,Developer
