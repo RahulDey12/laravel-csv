@@ -24,8 +24,8 @@ it('can give sanitized value', function () {
         ->and($column->getSanitizedValue())->toBe(trim($string_with_leading_spaces))
         ->and($column->getSanitizedValue(true))->toBe(trim($string_with_leading_spaces))
         ->and($column->getSanitizedValue([
-            fn($cell, $next) => $next((string)Str::of($cell)->snake()),
-            fn($cell, $next) => $next((string)Str::of($cell)->lower()),
+            fn ($cell, $next) => $next((string) Str::of($cell)->snake()),
+            fn ($cell, $next) => $next((string) Str::of($cell)->lower()),
         ]))->toBe('hello_world');
 });
 
