@@ -16,13 +16,6 @@ class Row implements ArrayAccess
     {
     }
 
-    public function getNthColumn(int $column): Column
-    {
-        $value = (string) Arr::get(array_values($this->record), $column);
-
-        return new Csv::$columnClass($value, $this->sanitize);
-    }
-
     public function getColumn(string|int $column): Column
     {
         $value = Arr::get($this->record, $column);

@@ -20,13 +20,13 @@ it('can give sanitized value', function () {
     $string_with_leading_spaces = '   Hello World';
     $column = new Column($string_with_leading_spaces);
 
-    expect($column->getValue())->toBe($string_with_leading_spaces);
-    expect($column->getSanitizedValue())->toBe(trim($string_with_leading_spaces));
-    expect($column->getSanitizedValue(true))->toBe(trim($string_with_leading_spaces));
-    expect($column->getSanitizedValue([
-        fn ($cell, $next) => $next((string) Str::of($cell)->snake()),
-        fn ($cell, $next) => $next((string) Str::of($cell)->lower()),
-    ]))->toBe('hello_world');
+    expect($column->getValue())->toBe($string_with_leading_spaces)
+        ->and($column->getSanitizedValue())->toBe(trim($string_with_leading_spaces))
+        ->and($column->getSanitizedValue(true))->toBe(trim($string_with_leading_spaces))
+        ->and($column->getSanitizedValue([
+            fn($cell, $next) => $next((string)Str::of($cell)->snake()),
+            fn($cell, $next) => $next((string)Str::of($cell)->lower()),
+        ]))->toBe('hello_world');
 });
 
 it('can give sanitized value by default', function () {

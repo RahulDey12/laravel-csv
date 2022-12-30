@@ -21,9 +21,8 @@ it('can create from disk', function () {
 
     $csv = $this->factory->fromDisk('private', $path);
 
-    expect($csv)->toBeInstanceOf(Csv::class);
-
-    expect($csv->getReader())->toBeInstanceOf(Reader::class);
+    expect($csv)->toBeInstanceOf(Csv::class)
+        ->and($csv->getReader())->toBeInstanceOf(Reader::class);
 });
 
 it('can create from file object', function () {
@@ -37,9 +36,8 @@ it('can create from file object', function () {
 
     $csv = $this->factory->fromFileObject($file_obj);
 
-    expect($csv)->toBeInstanceOf(Csv::class);
-
-    expect($csv->getReader())->toBeInstanceOf(Reader::class);
+    expect($csv)->toBeInstanceOf(Csv::class)
+        ->and($csv->getReader())->toBeInstanceOf(Reader::class);
 });
 
 it('can create from path', function () {
@@ -53,9 +51,8 @@ it('can create from path', function () {
 
     $csv = $this->factory->fromPath($file_name);
 
-    expect($csv)->toBeInstanceOf(Csv::class);
-
-    expect($csv->getReader())->toBeInstanceOf(Reader::class);
+    expect($csv)->toBeInstanceOf(Csv::class)
+        ->and($csv->getReader())->toBeInstanceOf(Reader::class);
 });
 
 it('can create from file stream', function () {
@@ -69,9 +66,8 @@ it('can create from file stream', function () {
 
     $csv = $this->factory->fromStream($fake_resource);
 
-    expect($csv)->toBeInstanceOf(Csv::class);
-
-    expect($csv->getReader())->toBeInstanceOf(Reader::class);
+    expect($csv)->toBeInstanceOf(Csv::class)
+        ->and($csv->getReader())->toBeInstanceOf(Reader::class);
 });
 
 it('can create from string', function () {
@@ -85,7 +81,6 @@ it('can create from string', function () {
 
     $csv = $this->factory->fromString($content);
 
-    expect($csv)->toBeInstanceOf(Csv::class);
-
-    expect($csv->getReader())->toBeInstanceOf(Reader::class);
+    expect($csv)->toBeInstanceOf(Csv::class)
+        ->and($csv->getReader())->toBeInstanceOf(Reader::class);
 });

@@ -8,7 +8,7 @@ use Illuminate\Pipeline\Pipeline;
 
 class Column
 {
-    public function __construct(protected string $cell, protected bool|array $sanitize = false)
+    public function __construct(protected ?string $cell, protected bool|array $sanitize = false)
     {
     }
 
