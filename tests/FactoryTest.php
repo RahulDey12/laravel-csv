@@ -12,75 +12,62 @@ beforeEach(function () {
 it('can create from disk', function () {
     $path = 'test/abc.csv';
     Storage::fake('private');
-
-    mock('alias:'.Reader::class)
-        ->shouldReceive('createFromPath')
-        ->once()
-        ->withArgs([Storage::disk('private')->path($path), 'r'])
-        ->andReturnSelf();
+    Storage::disk('private')->put($path, <<<EOF
+name,designation
+Taylor Otwell,Developer
+Rahul Dey,Developer
+EOF);
 
     $csv = $this->factory->fromDisk('private', $path);
+    expect($csv)->toBeInstanceOf(Csv::class);
 
-    expect($csv)->toBeInstanceOf(Csv::class)
-        ->and($csv->getReader())->toBeInstanceOf(Reader::class);
+    $reader = $csv->getReader();
+    expect($reader)->toBeInstanceOf(Reader::class)
+        ->toHaveCount(3);
 });
 
 it('can create from file object', function () {
-    $file_obj = new SplFileObject('php://memory');
-
-    mock('alias:'.Reader::class)
-        ->shouldReceive('createFromFileObject')
-        ->once()
-        ->withArgs([$file_obj])
-        ->andReturnSelf();
+    $file_obj = new SplFileObject(__DIR__.'/files/foo.csv');
 
     $csv = $this->factory->fromFileObject($file_obj);
+    expect($csv)->toBeInstanceOf(Csv::class);
 
-    expect($csv)->toBeInstanceOf(Csv::class)
-        ->and($csv->getReader())->toBeInstanceOf(Reader::class);
+    $reader = $csv->getReader();
+    expect($reader)->toBeInstanceOf(Reader::class)
+        ->toHaveCount(3);
 });
 
 it('can create from path', function () {
-    $file_name = 'test.csv';
-
-    mock('alias:'.Reader::class)
-        ->shouldReceive('createFromPath')
-        ->once()
-        ->withArgs([$file_name, 'r'])
-        ->andReturnSelf();
+    $file_name = __DIR__.'/files/foo.csv';
 
     $csv = $this->factory->fromPath($file_name);
+    expect($csv)->toBeInstanceOf(Csv::class);
 
-    expect($csv)->toBeInstanceOf(Csv::class)
-        ->and($csv->getReader())->toBeInstanceOf(Reader::class);
+    $reader = $csv->getReader();
+    expect($reader)->toBeInstanceOf(Reader::class)
+        ->toHaveCount(3);
 });
 
 it('can create from file stream', function () {
-    $fake_resource = '';
+    $csv = $this->factory->fromStream(fopen(__DIR__.'/files/foo.csv', 'r'));
+    expect($csv)->toBeInstanceOf(Csv::class);
 
-    mock('alias:'.Reader::class)
-        ->shouldReceive('createFromStream')
-        ->once()
-        ->withArgs([$fake_resource])
-        ->andReturnSelf();
-
-    $csv = $this->factory->fromStream($fake_resource);
-
-    expect($csv)->toBeInstanceOf(Csv::class)
-        ->and($csv->getReader())->toBeInstanceOf(Reader::class);
+    $reader = $csv->getReader();
+    expect($reader)->toBeInstanceOf(Reader::class)
+        ->toHaveCount(3);
 });
 
 it('can create from string', function () {
-    $content = '';
-
-    mock('alias:'.Reader::class)
-        ->shouldReceive('createFromString')
-        ->once()
-        ->withArgs([$content])
-        ->andReturnSelf();
+    $content = <<<EOF
+name,designation
+Taylor Otwell,Developer
+Rahul Dey,Developer
+EOF;
 
     $csv = $this->factory->fromString($content);
+    expect($csv)->toBeInstanceOf(Csv::class);
 
-    expect($csv)->toBeInstanceOf(Csv::class)
-        ->and($csv->getReader())->toBeInstanceOf(Reader::class);
+    $reader = $csv->getReader();
+    expect($reader)->toBeInstanceOf(Reader::class)
+        ->toHaveCount(3);
 });
