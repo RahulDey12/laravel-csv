@@ -18,10 +18,10 @@ EOF;
 
 it('can be counted', function () {
     expect($this->sheet)->toHaveCount(2);
-})->skip();
+});
 
 it('can be iterated with Row class', function () {
     foreach ($this->sheet as $row) {
         expect($row)->toBeInstanceOf(Row::class);
     }
-})->skip();
+});
