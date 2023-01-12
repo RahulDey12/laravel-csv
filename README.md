@@ -43,3 +43,12 @@ Csv::fromPath('titanic.csv')
         echo $passenger->Name
     });
 ```
+
+## Credits
+ - [Rahul Dey](https://github.com/RahulDey12)
+ - [All Contributors](https://github.com/RahulDey12/laravel-csv/graphs/contributors)
+
+This package contains code copied from Laravel's [`Builder`](https://github.com/laravel/framework/blob/9.x/src/Illuminate/Database/Query/Builder.php) & [`Collection`](https://github.com/laravel/framework/blob/9.x/src/Illuminate/Collections/Collection.php) class.
+
+## License
+This package is released under the [MIT License](https://github.com/RahulDey12/laravel-csv/blob/main/LICENSE.md).
