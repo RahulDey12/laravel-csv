@@ -12,7 +12,7 @@ beforeEach(function () {
 it('can create from disk', function () {
     $path = 'test/abc.csv';
     Storage::fake('private');
-    Storage::disk('private')->put($path, <<<EOF
+    Storage::disk('private')->put($path, <<<'EOF'
 name,designation
 Taylor Otwell,Developer
 Rahul Dey,Developer
@@ -58,7 +58,7 @@ it('can create from file stream', function () {
 });
 
 it('can create from string', function () {
-    $content = <<<EOF
+    $content = <<<'EOF'
 name,designation
 Taylor Otwell,Developer
 Rahul Dey,Developer
